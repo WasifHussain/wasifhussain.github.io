@@ -1,2 +1,8 @@
-node_modules
+node_modules/
 .DS_Store
+_site/
+artifacts/
+playwright-report/
+test-results/
+.env
+.env.*

@@ -47,6 +47,7 @@ before(async () => {
         "index.html",
         "package.json",
         "package-lock.json",
+        "CNAME",
         ...(await filesIn(join(repository, "assets"), "assets")),
         ...(await filesIn(join(repository, "scripts"), "scripts")),
     ];
@@ -57,6 +58,7 @@ before(async () => {
 test("build emits exactly the public site with intact assets and a downloadable PDF", async () => {
     const publicFiles = [
         "index.html",
+        "CNAME",
         ...(await filesIn(join(repository, "assets"), "assets")),
     ].sort();
     assert.deepEqual(
@@ -170,11 +172,10 @@ test("deployed page contains the current résumé and no unrelated template cred
         html,
         /Clarence Taylor|University of Colorado|Google Analytics Certified|wasifhussain\.me/
     );
-    assert.doesNotMatch(
-        html,
-        /<link\b[^>]*rel=["']canonical["']/i,
-        "Do not bind an unconfirmed production domain"
-    );
+    const domain = (await readFile(join(output, "CNAME"), "utf8")).trim();
+    assert.equal(domain, "wasifhussain.tech", "Use the domain the user purchased");
+    assert.match(html, /rel="canonical" href="https:\/\/wasifhussain\.tech\/"/);
+    assert.match(html, /property="og:url" content="https:\/\/wasifhussain\.tech\/"/);
 });
 
 test("rebuilding is repeatable and leaves source files unchanged", async () => {

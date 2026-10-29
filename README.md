@@ -37,7 +37,7 @@ Set `SITE_URL`, `CHROMIUM_PATH`, or `ARTIFACT_DIR` to override the defaults. Scr
 -   `index.html`: résumé content, experience, skills, project links, and metadata.
 -   `assets/app.js`: project details, filters, menu, and interactive system illustration.
 -   `assets/Wasif-Hussain-Resume.pdf`: downloadable résumé.
--   `assets/wasif-hussain.jpg`: portrait from the previous portfolio.
+-   `assets/wasif-hussain-headshot.jpg`: web-ready headshot based on the photo supplied by Wasif.
 -   `assets/fonts/`: DM Sans and Instrument Serif with their OFL licenses.
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for Name.com, student-domain, and deployment instructions. `wasifhussain.com` is a requested domain, not a registered or configured domain. This repository deliberately has no custom-domain binding until ownership is confirmed.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the exact DNS and GitHub Pages settings for **wasifhussain.tech**, the domain purchased by Wasif. The build includes its custom-domain declaration and canonical metadata; these files do not prove DNS or certificate readiness.

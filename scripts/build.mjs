@@ -20,7 +20,7 @@ await mkdir(output, { recursive: true });
 for (const file of ["index.html", "assets"])
     await cp(join(root, file), join(output, file), { recursive: true });
 await writeFile(join(output, ".nojekyll"), "");
-// Only ship a domain binding after ownership and DNS have been confirmed.
+// Ship a custom-domain declaration only after the user confirms ownership.
 try {
     await cp(join(root, "CNAME"), join(output, "CNAME"));
 } catch (error) {

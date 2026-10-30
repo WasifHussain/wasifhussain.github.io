@@ -37,51 +37,6 @@
         if (!mobile.matches) closeMenu();
     });
 
-    const engineeringFocus = {
-        healthcare: {
-            nodes: ["EHR", "APIs"],
-            core: "FHIR R4",
-            label: "HEALTHCARE INTEROPERABILITY",
-            title: ["Different systems.", "Shared understanding."],
-            status: "Healthcare integrations: EHR systems and APIs connected through FHIR R4.",
-        },
-        backend: {
-            nodes: ["Java", "REST"],
-            core: "Spring Boot",
-            label: "DEPENDABLE BACKEND SYSTEMS",
-            title: ["Thoughtful architecture.", "Reliable connections."],
-            status: "Backend systems: Java and REST APIs connected through Spring Boot microservices.",
-        },
-        delivery: {
-            nodes: ["JUnit 5", "Jenkins"],
-            core: "CI/CD",
-            label: "TESTED. CONNECTED. DELIVERED.",
-            title: ["Confidence in the code.", "Care in every release."],
-            status: "Software delivery: JUnit 5 automated testing and Jenkins pipelines supporting CI/CD.",
-        },
-    };
-    $$(".art-button").forEach((button) => {
-        button.addEventListener("click", () => {
-            const focus = engineeringFocus[button.dataset.focus];
-            if (!focus) return;
-            $$(".art-button").forEach((item) => {
-                const selected = item === button;
-                item.classList.toggle("active", selected);
-                item.setAttribute("aria-pressed", String(selected));
-            });
-            $("#node-a").textContent = focus.nodes[0];
-            $("#node-b").textContent = focus.nodes[1];
-            $("#core-label").textContent = focus.core;
-            $("#signal-label").textContent = focus.label;
-            $("#signal-title").replaceChildren(
-                document.createTextNode(focus.title[0]),
-                document.createElement("br"),
-                document.createTextNode(focus.title[1])
-            );
-            $("#diagram-status").textContent = focus.status;
-        });
-    });
-
     const cards = $$(".project-card");
     $$(".filter-button").forEach((button) => {
         button.addEventListener("click", () => {
@@ -100,15 +55,58 @@
                 item.setAttribute("aria-pressed", String(selected));
             });
             const label = filter === "all" ? "all" : button.textContent.trim();
-            $(
-                "#filter-status"
-            ).textContent = `Showing ${count} ${label} project${
-                count === 1 ? "" : "s"
-            }.`;
+            $("#filter-status").textContent =
+                `Showing ${count} ${label} project${count === 1 ? "" : "s"}.`;
         });
     });
 
     const projects = {
+        healthcare: {
+            category: "PROFESSIONAL WORK · HEALTHCARE INTEROPERABILITY",
+            title: "Connecting clinical systems",
+            description:
+                "Backend engineering for Qure4u's patient-engagement and clinical-workflow platform, connecting healthcare systems through Java microservices and standards-based APIs.",
+            points: [
+                "Developed Java 21 and Spring Boot microservices and REST APIs for patient engagement and clinical workflows.",
+                "Integrated Cerner and Athenahealth EHR systems with FHIR R4 data mappings aligned with HL7 FHIR standards.",
+                "Built asynchronous workflows with RabbitMQ and Apache Camel, managed Flyway migrations, and tested with JUnit 5, Mockito, and AssertJ.",
+            ],
+            stack: "Java 21 · Spring Boot · FHIR R4 · RabbitMQ · Apache Camel",
+            url: "https://www.qure4u.com/",
+            link: "About Qure4u",
+            credit: "Qure4u Inc. · Contract Software Engineer · July 2024–March 2026. Professional contribution to the platform.",
+        },
+        prizm: {
+            category: "PROFESSIONAL WORK · HEALTHCARE DATA",
+            title: "Search behind the healthcare data",
+            description:
+                "Software engineering for PRIZM at Deerhold, a US healthcare data and analytics platform for patient and provider information.",
+            points: [
+                "Contributed to development of PRIZM's healthcare data and analytics platform.",
+                "Worked with Elasticsearch for large-scale indexing and search, applying test-driven development to features and fixes.",
+                "Built and maintained Jenkins CI/CD pipelines and collaborated on iterative releases within Agile teams.",
+            ],
+            stack: "Elasticsearch · Test-driven development · Jenkins · CI/CD",
+            url: "https://deerhold.com/",
+            link: "About Deerhold",
+            credit: "Deerhold Ltd. · Software Engineer · February 2024–July 2026. Work delivered within an Agile team.",
+        },
+        namaste: {
+            category: "PROFESSIONAL WORK · WEBSITE DEVELOPMENT",
+            title: "Namaste Roving",
+            description:
+                "Website development work for Namaste Roving through Astra Technology, where I worked as a Software Engineer.",
+            points: [
+                "Contributed to the Namaste Roving website through Astra Technology.",
+                "Worked as a Software Engineer on the agency's website projects.",
+            ],
+            stack: "Website development · Agency project",
+            url: "https://namasteroving.com/",
+            link: "Visit Namaste Roving",
+            credit: "Astra Technology · Software Engineer. Website work contributed through the agency.",
+            creditUrl: "https://astratechnology.com.np/portfolio/5",
+            creditLink: "View Astra's project reference",
+        },
         restaurant: {
             category: "APPLIED MACHINE LEARNING",
             title: "Restaurant Recommendation System",
@@ -122,6 +120,7 @@
             stack: "Python · Django · Cosine similarity",
             url: "https://github.com/WasifHussain/RestaurantRecommender",
             link: "View source on GitHub",
+            credit: "Selected project · Restaurant recommendations with cosine similarity.",
         },
         ordering: {
             category: "FULL-STACK WEB DEVELOPMENT",
@@ -136,6 +135,7 @@
             stack: "PHP · Database design · Stripe",
             url: "https://github.com/WasifHussain/Food-Ordering-System-Repo",
             link: "Read project notes",
+            credit: "Semester project · The public repository currently contains project notes.",
         },
         tutor: {
             category: "MOBILE DEVELOPMENT + APPLIED ML",
@@ -150,6 +150,7 @@
             stack: "Java · Android · Firebase · Khalti API",
             url: "https://github.com/WasifHussain/TutorHiringApp",
             link: "View source on GitHub",
+            credit: "Selected project · Android tutor matching, payments, and review sentiment analysis.",
         },
     };
     const dialog = $(".project-dialog");
@@ -164,20 +165,61 @@
                 $("#dialog-category").textContent = project.category;
                 $("#dialog-title").textContent = project.title;
                 $("#dialog-description").textContent = project.description;
+                const credit = $("#dialog-credit");
+                if (credit) {
+                    credit.replaceChildren(
+                        document.createTextNode(project.credit || ""),
+                    );
+                    if (project.creditUrl) {
+                        const reference = document.createElement("a");
+                        reference.href = project.creditUrl;
+                        reference.textContent = project.creditLink;
+                        reference.target = "_blank";
+                        reference.rel = "noopener noreferrer";
+                        reference.setAttribute(
+                            "aria-label",
+                            `${project.creditLink} (opens in a new tab)`,
+                        );
+                        credit.append(document.createTextNode(" "), reference);
+                    }
+                    credit.hidden = !project.credit;
+                }
                 $("#dialog-points").replaceChildren(
                     ...project.points.map((point) => {
                         const item = document.createElement("li");
                         item.textContent = point;
                         return item;
-                    })
+                    }),
                 );
                 $("#dialog-stack").textContent = project.stack;
                 const link = $("#dialog-link");
+                link.classList.add("project-link");
                 link.href = project.url;
-                link.textContent = `${project.link} ↗`;
+                const arrow = document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "svg",
+                );
+                arrow.setAttribute("class", "arrow-icon");
+                arrow.setAttribute("viewBox", "0 0 24 24");
+                arrow.setAttribute("fill", "none");
+                arrow.setAttribute("aria-hidden", "true");
+                const arrowPath = document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "path",
+                );
+                arrowPath.setAttribute("d", "m5 19 14-14M5 5h14v14");
+                arrowPath.setAttribute("stroke", "currentColor");
+                arrowPath.setAttribute("stroke-width", "1.5");
+                arrowPath.setAttribute("stroke-linecap", "round");
+                arrowPath.setAttribute("stroke-linejoin", "round");
+                arrow.append(arrowPath);
+                link.replaceChildren(
+                    document.createTextNode(project.link),
+                    arrow,
+                );
                 link.setAttribute(
                     "aria-label",
-                    `${project.link} (opens in a new tab)`
+                    `${project.link} (opens in a new tab)`,
                 );
                 dialog.showModal();
                 document.body.classList.add("dialog-open");
@@ -280,11 +322,11 @@
                 entries.forEach((entry) =>
                     visibility.set(
                         entry.target.id,
-                        entry.isIntersecting ? entry.intersectionRatio : 0
-                    )
+                        entry.isIntersecting ? entry.intersectionRatio : 0,
+                    ),
                 );
                 const current = [...visibility.entries()].sort(
-                    (a, b) => b[1] - a[1]
+                    (a, b) => b[1] - a[1],
                 )[0];
                 links.forEach((link) => {
                     if (current?.[1] > 0 && link.hash === `#${current[0]}`) {
@@ -297,7 +339,7 @@
             {
                 rootMargin: "-10% 0px -25% 0px",
                 threshold: [0, 0.1, 0.25, 0.5, 0.75],
-            }
+            },
         );
         links.forEach((link) => {
             const section = document.querySelector(link.hash);

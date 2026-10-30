@@ -30,8 +30,8 @@ async function snapshot(directory, files) {
             files.map(async (file) => [
                 file,
                 await readFile(join(directory, file)),
-            ])
-        )
+            ]),
+        ),
     );
 }
 
@@ -63,7 +63,7 @@ test("build emits exactly the public site with intact assets and a downloadable 
     ].sort();
     assert.deepEqual(
         await filesIn(output),
-        [...publicFiles, ".nojekyll"].sort()
+        [...publicFiles, ".nojekyll"].sort(),
     );
     for (const file of publicFiles) {
         const source = await readFile(join(repository, file));
@@ -72,7 +72,7 @@ test("build emits exactly the public site with intact assets and a downloadable 
         assert.deepEqual(
             emitted,
             source,
-            `${file} must survive deployment unchanged`
+            `${file} must survive deployment unchanged`,
         );
     }
     const pdf = await readFile(join(output, "assets/Wasif-Hussain-Resume.pdf"));
@@ -83,7 +83,7 @@ test("build emits exactly the public site with intact assets and a downloadable 
 test("every local HTML reference and internal anchor resolves in the deployed output", async () => {
     const html = await readFile(join(output, "index.html"), "utf8");
     const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(
-        (match) => match[1]
+        (match) => match[1],
     );
     assert.equal(new Set(ids).size, ids.length, "HTML ids must be unique");
     let assetCount = 0;
@@ -94,7 +94,7 @@ test("every local HTML reference and internal anchor resolves in the deployed ou
         if (value.startsWith("#")) {
             assert.ok(
                 ids.includes(decodeURIComponent(value.slice(1))),
-                `Missing anchor target: ${value}`
+                `Missing anchor target: ${value}`,
             );
             anchorCount += 1;
             continue;
@@ -103,21 +103,21 @@ test("every local HTML reference and internal anchor resolves in the deployed ou
         const file = resolve(output, pathname.replace(/^\/+/, ""));
         assert.ok(
             file.startsWith(output + sep),
-            `Asset must remain in the website: ${value}`
+            `Asset must remain in the website: ${value}`,
         );
         assert.ok(
             (await stat(file)).isFile(),
-            `Missing deployed asset: ${value}`
+            `Missing deployed asset: ${value}`,
         );
         assetCount += 1;
     }
     assert.ok(
         assetCount >= 6,
-        "Check the stylesheet, script, fonts, portrait, favicon, and résumé"
+        "Check the stylesheet, script, fonts, portrait, favicon, and résumé",
     );
     assert.ok(
         anchorCount >= 6,
-        "Check the primary navigation and page actions"
+        "Check the primary navigation and page actions",
     );
 });
 
@@ -125,27 +125,27 @@ test("all CSS font and image URLs are deployed locally", async () => {
     const stylesheet = join(output, "assets/styles.css");
     const css = await readFile(stylesheet, "utf8");
     const urls = [...css.matchAll(/url\(\s*["']?([^\s)"']+)["']?\s*\)/g)].map(
-        (match) => match[1]
+        (match) => match[1],
     );
     assert.ok(urls.length >= 2, "The design must load its self-hosted fonts");
     for (const url of urls) {
         assert.doesNotMatch(
             url,
             /^(?:https?:|\/\/)/,
-            "Fonts must not rely on an external provider"
+            "Fonts must not rely on an external provider",
         );
         if (url.startsWith("data:")) continue;
         const file = resolve(
             dirname(stylesheet),
-            decodeURIComponent(url.split(/[?#]/)[0])
+            decodeURIComponent(url.split(/[?#]/)[0]),
         );
         assert.ok(
             file.startsWith(output + sep),
-            `CSS URL escapes the website: ${url}`
+            `CSS URL escapes the website: ${url}`,
         );
         assert.ok(
             (await stat(file)).size > 0,
-            `Empty or missing CSS asset: ${url}`
+            `Empty or missing CSS asset: ${url}`,
         );
     }
 });
@@ -163,19 +163,30 @@ test("deployed page contains the current résumé and no unrelated template cred
         "JUL 2024 — MAR 2026",
         "Prairie View A&M University",
         "Expected May 2028",
+        "Astra Technology",
+        "Namaste Roving",
+        "https://namasteroving.com/",
+        "https://astratechnology.com.np/portfolio/5",
     ])
         assert.ok(
             normalizedHtml.includes(text),
-            `Missing current résumé content: ${text}`
+            `Missing current résumé content: ${text}`,
         );
     assert.doesNotMatch(
         html,
-        /Clarence Taylor|University of Colorado|Google Analytics Certified|wasifhussain\.me/
+        /Clarence Taylor|University of Colorado|Google Analytics Certified|wasifhussain\.me/,
     );
     const domain = (await readFile(join(output, "CNAME"), "utf8")).trim();
-    assert.equal(domain, "wasifhussain.tech", "Use the domain the user purchased");
+    assert.equal(
+        domain,
+        "wasifhussain.tech",
+        "Use the domain the user purchased",
+    );
     assert.match(html, /rel="canonical" href="https:\/\/wasifhussain\.tech\/"/);
-    assert.match(html, /property="og:url" content="https:\/\/wasifhussain\.tech\/"/);
+    assert.match(
+        html,
+        /property="og:url" content="https:\/\/wasifhussain\.tech\/"/,
+    );
 });
 
 test("rebuilding is repeatable and leaves source files unchanged", async () => {
@@ -187,7 +198,7 @@ test("rebuilding is repeatable and leaves source files unchanged", async () => {
     assert.deepEqual(second, first, "Repeated builds must emit the same bytes");
     assert.deepEqual(
         await snapshot(repository, [...sourceSnapshot.keys()]),
-        sourceSnapshot
+        sourceSnapshot,
     );
 });
 
@@ -207,7 +218,7 @@ test("preview serves the built website and rejects non-public or malformed reque
         let logs = "";
         const timeout = setTimeout(
             () => reject(new Error(`Server did not become ready: ${logs}`)),
-            8000
+            8000,
         );
         server.on("error", (error) => {
             clearTimeout(timeout);
@@ -228,7 +239,7 @@ test("preview serves the built website and rejects non-public or malformed reque
                 assert.notEqual(
                     match[1],
                     "0",
-                    "Startup must report the actual bound port"
+                    "Startup must report the actual bound port",
                 );
                 resolvePort(`http://127.0.0.1:${match[1]}`);
             }
@@ -248,7 +259,7 @@ test("preview serves the built website and rejects non-public or malformed reque
         assert.deepEqual(
             Buffer.from(await response.arrayBuffer()),
             await readFile(join(output, file)),
-            path
+            path,
         );
     }
     const head = await fetch(base + "/", { method: "HEAD" });
